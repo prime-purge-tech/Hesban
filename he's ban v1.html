@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>He'sBan</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#040810;--cyan:#00d4ff;--blue:#1e6fff;--green:#00d68f;--txt:#fff;--dim:#8aa3c2;
+--glass:rgba(255,255,255,.07);--glass2:rgba(255,255,255,.045);--gb:rgba(255,255,255,.16);
+--blur:blur(18px) saturate(170%)}
+html,body{width:100%;max-width:430px;margin:0 auto;min-height:100vh;background:var(--bg);color:var(--txt);
+font-family:'Segoe UI',system-ui,sans-serif}
+html{overflow-x:hidden}
+/* orbes de fond (rendent le flou visible) */
+body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+background:radial-gradient(circle 220px at 15% 12%,rgba(30,111,255,.55),transparent 70%),
+radial-gradient(circle 240px at 90% 38%,rgba(0,212,255,.35),transparent 70%),
+radial-gradient(circle 260px at 10% 80%,rgba(0,214,143,.28),transparent 70%),
+radial-gradient(circle 200px at 85% 95%,rgba(130,60,255,.35),transparent 70%)}
+.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;vertical-align:-.125em}
+.i.b{stroke:none;fill:currentColor}
+/* GLASS */
+.g,.g2,.modal .mbox,.login-card,.hdr,.bnav,.aide-card,.sec-card,.soc-btn,.ctc-btn,.crow,.inp,.ph-wrap,.tabs,.desc,.tuto-card,.hbtn,.asg,.pf,.pf-sess,.stat-card,.s-card,.tuto-vid{
+-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur)}
+.g,.g2,.aide-card,.sec-card,.soc-btn,.ctc-btn,.crow,.pf,.pf-sess,.stat-card,.s-card,.asg,.tuto-card{
+background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.04));
+border:1px solid var(--gb);border-top-color:rgba(255,255,255,.3);border-left-color:rgba(255,255,255,.22);
+box-shadow:0 8px 30px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.18)}
+@keyframes welGlow{0%,100%{text-shadow:0 0 10px var(--cyan),0 0 22px var(--cyan)}50%{text-shadow:0 0 26px var(--cyan),0 0 52px var(--cyan)}}
+@keyframes shopFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,214,143,.4)}60%{box-shadow:0 0 0 12px rgba(0,214,143,0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
+.view{display:none;min-height:100vh;flex-direction:column}
+.view.active{display:flex}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;
+background:rgba(6,12,24,.45);border-bottom:1px solid var(--gb);flex-shrink:0;position:sticky;top:0;z-index:20}
+.hdr-brand{font-size:19px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#fff 40%,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hdr-btns{display:flex;gap:8px}
+.hbtn{width:40px;height:40px;border-radius:12px;border:1px solid var(--gb);background:var(--glass);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:18px;box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
+.hbtn.rnd{border-radius:50%;background:rgba(30,111,255,.35)}
+.hbtn.act{background:rgba(0,212,255,.25);color:var(--cyan)}
+.btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:15px;border-radius:14px;cursor:pointer;font-size:13px;font-weight:800;letter-spacing:1.5px;margin-bottom:10px;transition:transform .1s;
+-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);font-size:13px}
+.btn:active{transform:scale(.97)}
+.btn .i{font-size:17px}
+.btn-g{background:linear-gradient(135deg,rgba(0,214,143,.38),rgba(0,214,143,.12));border:1px solid rgba(0,255,168,.4);color:#7dffd0;box-shadow:0 6px 24px rgba(0,214,143,.22),inset 0 1px 0 rgba(255,255,255,.25)}
+.btn-b{background:linear-gradient(135deg,rgba(30,111,255,.5),rgba(30,111,255,.15));border:1px solid rgba(90,150,255,.5);color:#fff;box-shadow:0 6px 24px rgba(30,111,255,.25),inset 0 1px 0 rgba(255,255,255,.25)}
+.btn-c{background:linear-gradient(135deg,rgba(0,212,255,.35),rgba(0,212,255,.1));border:1px solid rgba(0,212,255,.5);color:var(--cyan);box-shadow:0 6px 24px rgba(0,212,255,.2),inset 0 1px 0 rgba(255,255,255,.25)}
+.btn-gmail{background:linear-gradient(135deg,rgba(234,67,53,.35),rgba(234,67,53,.1));border:1px solid rgba(234,67,53,.5);color:#fff;opacity:.4;pointer-events:none}
+.btn-gmail.rdy{opacity:1;pointer-events:auto;box-shadow:0 8px 28px rgba(234,67,53,.35),inset 0 1px 0 rgba(255,255,255,.25)}
+#toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-70px);padding:9px 18px;border-radius:20px;font-weight:800;font-size:12px;z-index:999;transition:transform .3s;pointer-events:none;white-space:nowrap}
+#toast.ok{background:var(--green);color:#000;transform:translateX(-50%)}
+#toast.err{background:#e53935;color:#fff;transform:translateX(-50%)}
+.hbody{padding:14px 14px 80px}
+.home-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.brand-name{font-size:21px;font-weight:800;background:linear-gradient(135deg,#fff,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.brand-status{font-size:11px;color:var(--green);margin-top:2px}
+.welcome{margin-bottom:15px}.welcome p{font-size:12px;color:var(--dim)}.welcome h2{font-size:20px;font-weight:800}
+.prem-card{border-radius:18px;padding:14px;margin-bottom:20px;background:rgba(12,25,48,.6) url('https://ganga--link--ghhzdp9sv8hk.code.run/i/y4dyyd7r.jpg') center/cover;border:1px solid var(--gb);box-shadow:0 12px 40px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.2)}
+.prem-inner{background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,.04));-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:14px;padding:16px}
+.prem-badge{display:inline-block;background:rgba(0,212,255,.2);border:1px solid rgba(0,212,255,.4);color:var(--cyan);font-size:9px;font-weight:800;padding:4px 12px;border-radius:20px;letter-spacing:2px;margin-bottom:10px}
+.prem-card h3{font-size:25px;font-weight:900;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.prem-card h3 span{background:linear-gradient(135deg,var(--cyan),#80eeff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.prem-card h3 .i{font-size:16px;color:var(--cyan)}
+.prem-card p{font-size:12px;color:rgba(255,255,255,.7);margin-bottom:14px}
+.start-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:rgba(30,111,255,.45);border:1px solid rgba(120,170,255,.55);color:#fff;border-radius:22px;font-size:13px;font-weight:700;text-decoration:none;cursor:pointer;box-shadow:0 4px 16px rgba(30,111,255,.3),inset 0 1px 0 rgba(255,255,255,.25)}
+.shdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px}
+.shdr h3{font-size:15px;font-weight:800}
+.see-all{color:var(--cyan);font-size:12px;background:none;border:none;cursor:pointer}
+.aide-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}
+.aide-card{border-radius:14px;padding:13px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:border-color .2s}
+.aide-card:active{border-color:var(--cyan)}
+.ac-l{display:flex;align-items:center;gap:9px}
+.ac-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.ib{background:rgba(30,111,255,.25);color:#6ea0ff}.ic2{background:rgba(0,212,255,.2);color:var(--cyan)}.ig{background:rgba(0,214,143,.2);color:var(--green)}.io{background:rgba(255,159,10,.2);color:#ff9f0a}
+.ac-name{font-size:14px;font-weight:700}
+.chev{color:var(--dim);font-size:16px}
+.sec-card{border-radius:14px;padding:13px;display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;cursor:pointer}
+.sec-l{display:flex;align-items:center;gap:9px}
+.stat-card{border-radius:14px;padding:15px;margin-bottom:16px}
+.stat-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.stat-title{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700}
+.online-pill{background:rgba(0,214,143,.18);border:1px solid rgba(0,214,143,.35);color:var(--green);padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700}
+.perf-row{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-bottom:4px}
+.perf-row span{color:var(--txt);font-weight:700}
+.bar-bg{background:rgba(255,255,255,.12);border-radius:4px;height:5px;margin-bottom:9px}
+.bar-fill{height:5px;border-radius:4px;background:linear-gradient(90deg,var(--cyan),var(--blue));box-shadow:0 0 8px rgba(0,212,255,.5)}
+.metrics{display:flex;gap:12px}.met{font-size:11px;color:var(--dim)}.met b{color:var(--txt)}
+.soc-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:4px}
+.soc-btn{border-radius:14px;padding:12px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;font-size:13px;font-weight:700;text-decoration:none}
+.foot{text-align:center;color:var(--dim);font-size:10px;margin-top:16px;font-family:'Courier New',monospace}
+#view-login{align-items:center;justify-content:center;padding:40px 20px}
+.wel-wrap{text-align:center;margin-bottom:12px;animation:fadeUp .7s both}
+.wel-word{font-size:44px;font-weight:900;letter-spacing:7px}
+.wel-word .c{color:var(--cyan);animation:welGlow 2s ease infinite}
+.wel-sub{color:var(--dim);font-size:11px;letter-spacing:3px;font-family:'Courier New',monospace;margin-bottom:36px;animation:fadeUp .7s .15s both}
+.login-card{width:100%;border-radius:22px;padding:26px 18px;animation:fadeUp .7s .3s both;background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.04));border:1px solid var(--gb);border-top-color:rgba(255,255,255,.3);box-shadow:0 16px 50px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.2)}
+.inp{background:rgba(255,255,255,.07);border:1px solid var(--gb);border-radius:12px;padding:13px 14px;display:flex;align-items:center;gap:10px;margin-bottom:11px;color:var(--blue);font-size:18px}
+.inp:focus-within{border-color:rgba(0,212,255,.55);box-shadow:0 0 0 3px rgba(0,212,255,.1)}
+.inp input{background:none;border:none;outline:none;color:#fff;font-size:14px;flex:1;min-width:0}
+.inp input::placeholder{color:var(--dim)}
+.eye-btn{background:none;border:none;color:var(--dim);cursor:pointer;display:flex;align-items:center;font-size:18px}
+.sign-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:15px;background:linear-gradient(135deg,rgba(30,111,255,.55),rgba(30,111,255,.2));border:1px solid rgba(110,160,255,.55);color:#fff;border-radius:12px;font-size:14px;font-weight:900;letter-spacing:2px;cursor:pointer;margin-top:6px;box-shadow:0 6px 24px rgba(30,111,255,.3),inset 0 1px 0 rgba(255,255,255,.25)}
+.sign-btn:active{transform:scale(.97)}
+.login-foot{text-align:center;color:var(--dim);font-size:10px;margin-top:30px;font-family:'Courier New',monospace;line-height:1.6}
+.tool-body{flex:1;padding:13px;padding-bottom:80px}
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:13px}
+.s-card{border-radius:14px;padding:14px}
+.s-num{font-size:32px;font-weight:900;color:var(--cyan)}.s-lbl{font-size:10px;color:var(--dim);margin-top:2px}
+.tuto-card{border-radius:14px;padding:14px;cursor:pointer;display:flex;flex-direction:column;gap:5px;border-color:rgba(0,212,255,.4)}
+.tuto-pill{display:flex;align-items:center;justify-content:center;gap:5px;background:rgba(0,212,255,.2);border:1px solid rgba(0,212,255,.4);color:var(--cyan);font-size:11px;font-weight:900;padding:7px;border-radius:8px}
+.tool-card{border-radius:16px;padding:17px;margin-bottom:13px}
+.tabs{display:flex;background:rgba(255,255,255,.06);border-radius:10px;padding:3px;margin-bottom:13px}
+.tab{flex:1;padding:9px;border:none;border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;background:none;color:var(--dim);display:flex;align-items:center;justify-content:center;gap:5px}
+.tab.on{background:rgba(0,212,255,.18);color:var(--cyan);border:1px solid rgba(0,212,255,.35)}
+.ph-wrap{display:flex;align-items:center;gap:9px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.35);border-radius:12px;padding:12px 13px;margin-bottom:13px;color:var(--cyan);font-size:17px}
+.ph-wrap:focus-within{border-color:rgba(0,212,255,.7);box-shadow:0 0 16px rgba(0,212,255,.15)}
+.ph-wrap input{flex:1;background:none;border:none;outline:none;color:#fff;font-size:14px;min-width:0}
+.ph-wrap input::placeholder{color:var(--dim)}
+.sel-lbl{font-size:11px;margin-bottom:10px;color:var(--dim)}.sel-lbl b{color:var(--cyan)}
+.asg-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:11px}
+.asg{border-radius:12px;padding:11px 5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .2s;color:var(--cyan);font-size:20px}
+.asg.on{border-color:var(--cyan);background:rgba(0,212,255,.22);box-shadow:0 0 16px rgba(0,212,255,.25)}
+.asg-lbl{font-size:10px;font-weight:800;color:var(--cyan);letter-spacing:.5px}
+.desc{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.25);border-radius:12px;padding:12px;font-size:12px;color:rgba(255,255,255,.8);line-height:1.6;margin-bottom:12px;display:none}
+.desc b{color:var(--cyan)}
+.prof-body{flex:1;padding:18px 14px 80px}
+.prof-top{display:flex;flex-direction:column;align-items:center;margin-bottom:20px}
+.pic-ring{position:relative;width:102px;height:102px;margin-bottom:11px}
+.prof-img{width:102px;height:102px;border-radius:50%;object-fit:cover;border:3px solid rgba(0,212,255,.6);box-shadow:0 0 24px rgba(0,212,255,.3)}
+.cam-btn{position:absolute;bottom:1px;right:1px;width:30px;height:30px;background:rgba(0,212,255,.35);border:1px solid rgba(0,212,255,.6);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border-radius:50%;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px}
+.prof-name{font-size:20px;font-weight:900}
+.prof-role{color:var(--cyan);font-size:11px;font-weight:800;letter-spacing:2px;margin-top:2px}
+.tech-btn{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:5px 13px;background:rgba(0,212,255,.15);border:1px solid rgba(0,212,255,.4);color:var(--cyan);border-radius:20px;font-size:10px;font-weight:800;letter-spacing:1px;text-decoration:none}
+.prof-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}
+.pf{border-radius:12px;padding:12px}
+.pf-lbl{color:var(--dim);font-size:10px;margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.pf-val{font-size:13px;font-weight:800}
+.pf-val.blur{filter:blur(4px);user-select:none}
+.pf-sess{border-radius:12px;padding:12px;margin-bottom:13px}
+.chpw-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:linear-gradient(135deg,rgba(0,212,255,.35),rgba(0,212,255,.1));border:1px solid rgba(0,212,255,.5);color:var(--cyan);border-radius:12px;font-size:13px;font-weight:800;letter-spacing:1px;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+.chpw-btn:active{transform:scale(.97)}
+.info-body{flex:1;padding:13px;padding-bottom:80px}
+.shop-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:linear-gradient(135deg,rgba(30,111,255,.5),rgba(30,111,255,.15));border:1px solid rgba(110,160,255,.5);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border-radius:16px;padding:15px;color:#fff;font-size:14px;font-weight:900;letter-spacing:1px;text-decoration:none;margin-bottom:13px;box-shadow:0 8px 28px rgba(30,111,255,.25),inset 0 1px 0 rgba(255,255,255,.25);animation:shopFloat 3s ease-in-out infinite}
+.info-sec{border-radius:16px;padding:17px;margin-bottom:12px}
+.info-sec h3{font-size:11px;font-weight:900;letter-spacing:2px;margin-bottom:13px;color:rgba(255,255,255,.65)}
+.irow{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:12px}
+.irow:last-child{border:none;padding-bottom:0}
+.ik{color:var(--dim)}.iv{font-weight:700;font-family:'Courier New',monospace;font-size:11px;text-align:right;max-width:55%}
+.ctc-btn{display:flex;align-items:center;justify-content:space-between;width:100%;border-radius:12px;padding:12px 14px;color:#fff;cursor:pointer;text-decoration:none;font-size:13px;margin-bottom:8px;font-weight:600}
+.ctc-l{display:flex;align-items:center;gap:10px}
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);width:100%;max-width:430px;background:rgba(6,12,24,.5);border-top:1px solid var(--gb);display:flex;z-index:50;padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -4px 24px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.12)}
+.bnav.show{transform:translateX(-50%)}
+.nit{flex:1;padding:10px 4px 6px;border:none;background:none;color:var(--dim);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:600;text-decoration:none}
+.nit .i{font-size:20px}
+.nit.on{color:var(--cyan)}
+.nit.yt{color:#ff3030}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);z-index:200;justify-content:center;align-items:flex-end}
+.modal.on{display:flex}
+.mbox{background:linear-gradient(160deg,rgba(255,255,255,.16),rgba(255,255,255,.05));border-radius:24px 24px 0 0;padding:22px 17px;width:100%;max-width:430px;animation:slideUp .3s ease;border:1px solid var(--gb);border-bottom:none;border-top-color:rgba(255,255,255,.35);box-shadow:0 -12px 50px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.2)}
+.modal.ctr{align-items:center}
+.modal.ctr .mbox{border-radius:22px;margin:16px;width:calc(100% - 32px);border-bottom:1px solid var(--gb)}
+.mhdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.mclose{background:rgba(255,255,255,.1);border:1px solid var(--gb);width:30px;height:30px;border-radius:50%;color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.def-pill{background:rgba(30,111,255,.2);border:1px solid rgba(30,111,255,.4);color:#9bbcff;padding:4px 11px;border-radius:20px;font-size:11px;font-weight:800;display:inline-flex;align-items:center;gap:5px}
+.fa-hdr{text-align:center;padding:14px 0 17px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:14px}
+.fa-ring{width:58px;height:58px;border-radius:50%;background:rgba(0,214,143,.18);border:2px solid rgba(0,214,143,.5);display:flex;align-items:center;justify-content:center;margin:0 auto 9px;animation:pulse 2.5s ease-in-out infinite;font-size:26px;color:var(--green)}
+.fa-badge{color:var(--green);font-size:10px;font-weight:900;letter-spacing:2.5px;margin-bottom:3px}
+.fa-title{font-size:19px;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,#fff,var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.fa-sub{color:var(--dim);font-size:11px;margin-top:3px}
+.crow{border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.cl{display:flex;align-items:center;gap:9px}
+.ci{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.ciu{background:rgba(30,111,255,.25);color:#6ea0ff}.cip{background:rgba(255,159,10,.2);color:#ff9f0a}.cie{background:rgba(0,214,143,.2);color:var(--green)}.cir{background:rgba(0,212,255,.2);color:var(--cyan)}
+.ck{font-size:9px;color:var(--dim);letter-spacing:1.5px;margin-bottom:2px}
+.cv{font-family:'Courier New',monospace;font-weight:800;font-size:13px}
+.cp{background:rgba(255,255,255,.1);border:1px solid var(--gb);border-radius:8px;color:var(--dim);cursor:pointer;padding:7px;display:flex;align-items:center;font-size:15px}
+.cp:active{color:var(--cyan)}
+.mtitle{font-size:19px;font-weight:900;letter-spacing:2px;margin-bottom:4px}
+.msub{color:var(--dim);font-size:11px;margin-bottom:13px}
+.tuto-vid{width:100%;aspect-ratio:16/9;background:rgba(0,0,0,.35);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:9px;margin-bottom:13px;border:1px solid var(--gb)}
+.play{width:54px;height:54px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px}
+.tuto-steps{font-size:12px;color:rgba(255,255,255,.7);line-height:1.85}.tuto-steps b{color:var(--cyan)}
+.vb{position:relative;isolation:isolate;overflow:hidden}
+.vbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;opacity:.6;pointer-events:none;border-radius:inherit}
+.vb{text-shadow:0 1px 6px rgba(0,0,0,.65)}
+.step{font-size:11px;font-weight:800;color:var(--dim);letter-spacing:1px;margin-bottom:8px}.step b{color:var(--cyan)}
+.dest{text-align:center;font-size:10px;color:var(--dim);margin-top:-2px;font-family:'Courier New',monospace}
+/* ===== EFFETS ===== */
+.hdr{transition:transform .35s ease}
+.hdr.away{transform:translateY(-110%)}
+@keyframes viewIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.view.active{animation:viewIn .4s ease both}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-14px,18px) scale(1.08)}100%{transform:translate(12px,-10px) scale(1.03)}}
+body::before{animation:drift 14s ease-in-out infinite alternate}
+@keyframes shim{to{background-position:100% 0}}
+.brand-name,.hdr-brand{background-size:200% 100%;animation:shim 4s linear infinite alternate}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.45}}
+.brand-status,.online-pill{animation:blink 2s ease-in-out infinite}
+@keyframes grow{from{width:0}}
+.bar-fill{animation:grow 1.4s cubic-bezier(.2,.8,.2,1) both}
+@keyframes badgeGlow{0%,100%{box-shadow:0 0 0 rgba(0,212,255,0)}50%{box-shadow:0 0 14px rgba(0,212,255,.55)}}
+.prem-badge{animation:badgeGlow 2.4s ease-in-out infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pic-ring::before{content:'';position:absolute;inset:-6px;border-radius:50%;background:conic-gradient(var(--cyan),transparent 30%,var(--blue) 55%,transparent 80%,var(--cyan));animation:spin 4s linear infinite}
+.prof-img{position:relative;z-index:1}.cam-btn{z-index:2}
+@keyframes pop{40%{transform:scale(1.5)}}
+.pop{animation:pop .5s ease}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.ac-ico,.fa-ring{animation:floaty 3s ease-in-out infinite}
+/* apparition au scroll */
+.rv{opacity:0;scale:.92;transition:opacity .6s ease,scale .6s cubic-bezier(.2,.8,.2,1),transform .15s ease,border-color .2s,box-shadow .2s}
+.rv.in{opacity:1;scale:1}
+/* survol / appui */
+.aide-card,.sec-card,.soc-btn,.ctc-btn,.asg,.tuto-card,.pf,.hbtn,.nit{transition:transform .2s ease,box-shadow .25s ease,border-color .2s}
+.aide-card:active,.sec-card:active,.soc-btn:active,.ctc-btn:active,.asg:active,.tuto-card:active,.hbtn:active,.start-btn:active,.shop-btn:active{transform:scale(.95)}
+@media(hover:hover){.aide-card:hover,.sec-card:hover,.soc-btn:hover,.ctc-btn:hover,.asg:hover,.tuto-card:hover,.pf:hover{transform:translateY(-3px);box-shadow:0 12px 34px rgba(0,212,255,.22),inset 0 1px 0 rgba(255,255,255,.25)}.btn:hover{filter:brightness(1.15)}}
+/* reflet qui passe sur les gros boutons */
+.btn.vb::after,.sign-btn::after,.start-btn::after,.chpw-btn::after,.shop-btn::after{content:'';position:absolute;top:0;left:-70%;width:45%;height:100%;pointer-events:none;background:linear-gradient(100deg,transparent,rgba(255,255,255,.28),transparent);transform:skewX(-20deg);animation:shine 4.5s ease-in-out infinite}
+@keyframes shine{0%,60%{left:-70%}100%{left:130%}}
+.sign-btn,.start-btn,.chpw-btn,.shop-btn{position:relative;overflow:hidden}
+/* ondes au toucher */
+.hbtn,.nit,.tab,.cp,.mclose{position:relative;overflow:hidden}
+.rip{position:absolute;border-radius:50%;background:rgba(255,255,255,.4);transform:scale(0);animation:rip .6s ease-out forwards;pointer-events:none}
+@keyframes rip{to{transform:scale(4);opacity:0}}
+#toast{transition:transform .45s cubic-bezier(.3,1.6,.5,1)}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.rv{opacity:1;scale:1}}
+#loader{position:fixed;inset:0;background:#000;z-index:2000;display:flex;align-items:center;justify-content:center;transition:opacity .6s ease}
+#loader.out{opacity:0;pointer-events:none}
+.ld-wrap{width:min(320px,80vw)}
+#ldSvg{width:100%;height:auto;display:block;overflow:visible}
+.ld-pct{margin-top:12px;text-align:left;font:600 11px 'Courier New',monospace;color:#8aa3c2;letter-spacing:1px}
+</style>
+</head>
+<body>
+<!-- ICONES -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="skull" viewBox="0 0 24 24"><path d="M12 3C7.6 3 4.5 6 4.5 10c0 2.4 1.1 4 2.5 5.1V19a1 1 0 001 1h1.5v-2H11v2h2v-2h1.5v2H16a1 1 0 001-1v-3.9c1.4-1.1 2.5-2.7 2.5-5.1C19.5 6 16.4 3 12 3z"/><circle cx="9" cy="11" r="1.8" fill="currentColor"/><circle cx="15" cy="11" r="1.8" fill="currentColor"/><path d="M12 13.4l-1.1 2.1h2.2z" fill="currentColor"/></symbol>
+<symbol id="user" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></symbol>
+<symbol id="lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></symbol>
+<symbol id="key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2L21 2M16 7l3 3M14 9l2 2"/></symbol>
+<symbol id="shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+<symbol id="wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></symbol>
+<symbol id="wifi" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></symbol>
+<symbol id="mobile" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></symbol>
+<symbol id="gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 01-2 2H7a2 2 0 01-2-2v-7M7.5 8a2.5 2.5 0 010-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 010 5"/></symbol>
+<symbol id="crown" viewBox="0 0 24 24"><path d="M2 8l5 4 5-8 5 8 5-4-2 12H4z"/></symbol>
+<symbol id="cart" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></symbol>
+<symbol id="store" viewBox="0 0 24 24"><path d="M3 9l1.5-5h15L21 9M3 9h18M3 9a3 3 0 006 0 3 3 0 006 0 3 3 0 006 0M5 12v9h14v-9"/></symbol>
+<symbol id="headset" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></symbol>
+<symbol id="camera" viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></symbol>
+<symbol id="copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></symbol>
+<symbol id="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
+<symbol id="cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+<symbol id="eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="eyeoff" viewBox="0 0 24 24"><path d="M17.9 17.9A10.9 10.9 0 0112 20C5 20 1 12 1 12a18.5 18.5 0 015.1-5.9M9.9 4.2A9.1 9.1 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.2 3.2M1 1l22 22"/></symbol>
+<symbol id="home" viewBox="0 0 24 24"><path d="M3 10l9-7 9 7v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+<symbol id="info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+<symbol id="play" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></symbol>
+<symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+<symbol id="back" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+<symbol id="dots" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></symbol>
+<symbol id="refresh" viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0114.9-3.4L23 10M1 14l4.6 4.4A9 9 0 0020.5 15"/></symbol>
+<symbol id="bolt" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></symbol>
+<symbol id="cpu" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></symbol>
+<symbol id="ext" viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></symbol>
+<symbol id="close" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+<symbol id="chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></symbol>
+<symbol id="diamond" viewBox="0 0 24 24"><path d="M12 2l10 10-10 10L2 12z"/></symbol>
+<symbol id="wa" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#25D366"/><path fill="#fff" d="M17.5 14.3c-.3-.1-1.8-.9-2-.9-.3-.1-.5-.2-.7.1-.2.3-.7.9-.9 1.1-.2.2-.4.2-.7 0a8 8 0 01-2.3-1.4 9 9 0 01-1.6-2c-.1-.3 0-.5.1-.7.1-.1.3-.4.4-.5.1-.2.2-.3.2-.5 0-.2 0-.4-.1-.5-.1-.1-.7-1.6-.9-2.1-.2-.5-.5-.4-.7-.5h-.6c-.2 0-.5.1-.7.4-.3.3-1 1-1 2.4s1 2.7 1.2 2.9c.1.2 2 3.1 4.8 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.3.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.6-.3z"/></symbol>
+<symbol id="tg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#2AABEE"/><path fill="#fff" d="M5.3 11.8 17 7c.6-.2 1 .2.8.9L15.8 17c-.1.6-.5.8-.9.5l-2.8-2.1-1.4 1.3c-.1.1-.3.2-.5.2l.2-3 5.1-4.6c.2-.2 0-.3-.3-.1l-6 3.8-2.6-.9c-.6-.2-.5-.6.7-1.3z"/></symbol>
+<symbol id="yt" viewBox="0 0 24 24"><rect x="0" y="3.5" width="24" height="17" rx="5" fill="#FF0000"/><path fill="#fff" d="M9.7 8.8v6.4l5.6-3.2z"/></symbol>
+<symbol id="gm" viewBox="0 0 75.9 58"><path d="M4.3 58h13.3V28.9L0 17.3V53.6C0 56.1 2 58 4.3 58z" fill="#4285F4"/><path d="M58.3 58h13.3c2.4 0 4.3-1.9 4.3-4.3V17.3L58.3 28.9z" fill="#34A853"/><path d="M58.3 4.3v24.6l17.6-13V6.5c0-5.4-6.1-8.4-10.5-5.2z" fill="#FBBC04"/><path d="M17.6 28.9V4.3L37.9 19 58.3 4.3v24.6L37.9 43.7z" fill="#EA4335"/><path d="M0 6.5v9.4l17.6 13V4.3L12.9 1.3C8.5-1.9 0 1.1 0 6.5z" fill="#C5221F"/></symbol>
+</defs></svg>
+
+<div id="loader"><div class="ld-wrap">
+<svg id="ldSvg" viewBox="140 96 432 100" role="img" aria-label="Chargement">
+<defs><clipPath id="ldClip"><rect x="146.5" y="171.3" width="419.5" height="20" rx="4"/></clipPath></defs>
+<rect x="146.5" y="171.3" width="419.5" height="20" rx="4" fill="#fff"/>
+<rect id="ldFill" x="146.5" y="171.3" width="12" height="20" fill="#c1001f" clip-path="url(#ldClip)"/>
+<g fill="#fff" fill-rule="evenodd"><path d="M526.5 160.1 526.5 170.9 528.9 170.9 528.9 168.8 527.9 167.1 527.9 163.8 527.0 162.5 526.9 160.8ZM526.5 150.5 526.5 151.0 526.9 151.4 527.1 152.4 527.8 152.9 533.1 152.9 533.6 153.1 534.0 153.8 534.0 170.9 559.9 170.9 559.9 153.8 560.1 153.2 560.8 152.9 566.1 152.9 566.9 152.1 566.9 150.8 566.1 150.0 550.8 150.0 550.4 149.9 549.4 149.0 548.9 148.1 548.9 144.8 548.0 143.5 547.9 142.8 547.0 141.5 546.8 140.5 546.0 140.0 545.2 140.4 544.4 142.1 544.4 142.8 545.0 143.8 545.2 144.6 546.0 145.8 545.9 147.5 544.5 148.9 543.8 149.0 542.1 150.0 537.0 150.0 536.9 150.5Z"/></g>
+<g id="ldMan" fill="#fff" fill-rule="evenodd">
+<path d="M500.1 144.4 499.1 145.4 499.0 147.1 499.9 148.4 500.0 149.1 500.9 150.4 501.0 151.1 501.9 152.4 502.2 153.6 503.9 155.4 504.2 156.6 506.4 158.8 507.1 158.9 507.6 158.6 507.9 157.8 507.8 157.4 507.0 156.5 506.9 154.8 506.0 153.5 505.9 152.8 505.0 151.5 504.9 150.8 504.0 149.5 503.9 148.8 503.0 147.5 502.6 146.2 501.1 144.6 500.8 144.4Z"/>
+<path d="M520.8 162.4 519.6 161.2 519.1 161.0 516.9 161.0 515.1 162.0 508.8 162.0 508.2 162.2 507.2 163.2 507.0 163.8 507.0 165.1 507.2 165.6 508.2 166.6 509.5 167.0 510.9 168.4 511.0 170.9 514.9 170.9 514.9 167.8 515.5 167.0 516.6 166.6 517.4 166.0 518.6 165.6 520.8 163.5 520.9 163.1Z"/>
+<path d="M509.0 154.5 509.0 155.1 510.0 156.8 510.0 158.1 510.2 158.6 511.2 159.6 512.1 159.9 513.1 160.5 513.8 160.5 514.8 159.9 516.4 159.8 517.8 158.9 520.1 158.9 521.2 159.6 522.4 160.0 522.9 160.5 523.2 161.6 523.9 162.4 524.0 164.1 525.0 165.8 525.0 170.9 526.4 170.9 526.4 159.9 526.0 159.5 525.6 158.2 524.6 157.2 523.4 156.9 522.1 156.0 517.8 156.0 517.0 155.4 516.8 154.5Z"/>
+<path d="M520.4 138.1 517.8 138.0 516.5 138.9 515.2 139.2 511.2 143.2 510.9 144.5 510.0 145.8 509.9 147.5 509.0 148.8 509.0 155.1 509.5 155.9 517.6 155.9 517.0 155.4 516.6 154.2 516.0 153.5 515.9 151.8 516.6 150.6 517.0 149.4 517.6 148.6 518.2 147.1 519.1 146.9 519.5 147.0 520.4 147.8Z"/>
+<g id="ldArm"><path d="M520.5 138.2 520.5 147.9 522.2 149.6 522.8 149.9 525.1 149.9 525.9 150.4 536.9 150.4 536.9 150.0 535.8 150.0 534.9 149.1 534.9 147.8 535.0 147.4 535.8 146.5 535.9 146.1 535.8 145.5 535.1 145.0 533.8 145.0 532.2 144.1 532.0 144.2 531.9 145.5 530.5 146.9 530.1 147.0 524.8 147.0 524.4 146.9 521.0 143.5 520.9 143.1 520.9 138.9Z"/></g>
+<path d="M523.8 132.0 523.2 132.2 522.2 133.2 521.9 134.5 521.1 135.4 521.0 136.1 521.8 137.2 522.2 138.6 523.2 139.6 524.5 140.0 525.4 140.8 526.1 140.9 526.5 140.8 527.4 140.0 528.6 139.6 529.6 138.6 529.9 138.1 529.9 134.8 529.6 134.2 527.6 132.2 527.1 132.0Z"/>
+</g>
+<g id="ldR" fill="#c1001f"><g id="ldSc"><line x1="324.5" y1="167" x2="343" y2="118.5" stroke="#c1001f" stroke-width="1.7" stroke-linecap="round"/><path d="M343.5 117.5 C350 119 356 128 355 140 C353 133 348.5 126.5 341.5 124.5 Z"/></g>
+<path fill-rule="evenodd" d="M337.4 129.9 337.0 130.4 336.9 131.4 336.0 132.4 335.9 133.4 335.0 134.4 334.9 135.4 334.0 136.4 333.8 137.6 328.8 142.6 328.4 142.8 328.0 142.5 327.9 141.8 328.1 141.2 328.9 140.5 329.0 139.5 329.8 138.8 330.0 138.2 330.0 136.5 331.0 135.4 331.0 129.8 330.6 129.0 328.9 127.2 328.1 126.9 326.5 126.9 325.9 126.2 325.1 125.9 323.8 125.9 323.0 126.2 322.4 126.9 320.8 126.9 320.0 127.2 319.4 127.9 317.8 127.9 317.0 128.2 316.4 128.9 314.8 128.9 314.0 129.2 313.6 129.8 313.0 130.0 312.2 129.8 311.9 129.2 311.1 128.9 308.8 128.9 308.4 129.0 308.0 129.4 307.9 129.8 307.9 131.1 308.2 131.9 311.0 134.6 311.4 134.9 312.6 135.1 313.4 135.9 314.4 136.0 314.9 136.5 315.0 136.9 314.9 137.4 313.6 138.8 312.4 139.0 311.6 139.8 310.4 140.0 310.0 140.2 306.0 144.4 305.9 144.8 305.9 146.4 305.0 147.4 304.9 148.4 304.2 149.0 303.9 149.8 303.9 152.6 304.0 152.8 303.8 153.6 303.2 154.0 302.9 154.8 302.9 159.6 303.0 159.8 302.8 160.6 302.2 161.0 301.9 161.8 301.9 163.4 299.2 166.0 298.9 166.8 298.9 167.4 298.4 167.9 297.4 168.0 295.4 169.9 293.8 169.9 293.4 170.0 293.0 170.4 292.9 170.9 324.0 170.9 324.0 169.5 323.6 169.8 323.0 169.9 322.1 169.6 321.2 168.6 321.1 168.0 321.2 167.4 326.4 157.6 327.5 155.8 328.1 154.2 328.5 153.9 329.0 152.9 329.1 152.2 329.6 151.8 335.4 140.9 335.8 140.2 336.8 139.4 336.6 139.0 336.0 138.4 335.9 137.0 336.0 136.5 336.9 135.5 337.0 134.5 337.4 134.0ZM325.4 154.0 325.9 154.5 326.0 154.9 325.9 155.4 325.0 156.4 324.9 157.4 324.1 158.2 323.9 159.4 323.4 159.8 322.9 159.1 322.8 158.2 322.0 157.4 321.9 156.8 322.0 156.6 322.0 154.5 322.5 154.0ZM329.4 131.0 329.9 131.6 329.9 135.4 329.0 136.2 328.8 137.5 328.0 138.4 327.4 138.9 327.0 139.0 326.5 138.9 326.0 138.4 325.9 137.0 326.1 136.2 326.6 135.9 327.0 135.1 327.0 133.5 327.9 132.5 328.0 131.5 328.5 131.0 328.9 130.9Z"/></g>
+<g id="ldFX"></g>
+<circle id="ldRing" cx="512" cy="146" r="1" fill="none" stroke="#c1001f" stroke-width="2.4" opacity="0"/>
+</svg>
+<div class="ld-pct" id="ldPct">0%</div>
+</div></div>
+<script>
+/* ===== LOADER : la faucheuse tue l'employé — mort différente et aléatoire à chaque entrée ===== */
+(function(){
+var L=document.getElementById('loader'),$=function(i){return document.getElementById(i)};
+var fill=$('ldFill'),R=$('ldR'),Sc=$('ldSc'),man=$('ldMan'),arm=$('ldArm'),pct=$('ldPct'),ring=$('ldRing'),FX=$('ldFX');
+var NS='http://www.w3.org/2000/svg';
+var D=4600,t0=performance.now(),X0=-150,XE=148,H=[335.5,143.5],T0=0.86;
+document.documentElement.style.overflow='hidden';
+function sm(a,b,v){v=Math.min(1,Math.max(0,(v-a)/(b-a)));return v*v*(3-2*v)}
+function cl(v){return Math.min(1,Math.max(0,v))}
+function lerp(a,b,u){return a+(b-a)*u}
+function f(n){return n.toFixed(2)}
+function mk(tag,at,par){var e=document.createElementNS(NS,tag);for(var k in at)e.setAttribute(k,at[k]);(par||FX).appendChild(e);return e}
+function end(){L.classList.add('out');document.documentElement.style.overflow='';setTimeout(function(){L.remove()},700)}
+
+/* choix aléatoire (jamais deux fois la même d'affilée) */
+var KINDS=['slash','anvil','piano','lightning','heart','meteor'];
+var last=-1;try{last=parseInt(localStorage.getItem('ldLast'),10)}catch(e){}
+var idx;do{idx=Math.floor(Math.random()*KINDS.length)}while(idx===last);
+try{localStorage.setItem('ldLast',idx)}catch(e){}
+var kind=KINDS[idx],P={},TR=T0,RMAX=30;
+
+/* décors de chaque mort */
+if(kind==='anvil'){
+  P.g=mk('g',{opacity:0});
+  mk('path',{d:'M-13 -14 L9 -14 Q14 -14 14 -10 L9 -8 L4.5 -8 L4.5 -3.5 L9.5 -3 L9.5 0 L-9.5 0 L-9.5 -3 L-4.5 -3.5 L-4.5 -8 L-9 -8 Q-12 -9 -13 -14 Z',fill:'#fff'},P.g);
+}else if(kind==='piano'){
+  P.g=mk('g',{opacity:0});
+  mk('path',{d:'M-20 -24 H20 V-10 H16 V0 H12 V-10 H-12 V0 H-16 V-10 H-20 Z',fill:'#fff'},P.g);
+  mk('path',{d:'M-18 -12.5 H18 M-12 -12.5 V-9 M-6 -12.5 V-9 M0 -12.5 V-9 M6 -12.5 V-9 M12 -12.5 V-9',stroke:'#000','stroke-width':1.1,fill:'none'},P.g);
+}else if(kind==='lightning'){
+  P.glow=mk('polyline',{fill:'none',stroke:'#c1001f','stroke-width':4.5,'stroke-linejoin':'round',opacity:0});
+  P.bolt=mk('polyline',{fill:'none',stroke:'#fff','stroke-width':1.7,'stroke-linejoin':'round',opacity:0});
+}else if(kind==='heart'){
+  P.g=mk('g',{opacity:0});
+  mk('path',{d:'M0 4 C-9 -3 -8 -10 -3.5 -10 C-1.5 -10 0 -8.5 0 -7 C0 -8.5 1.5 -10 3.5 -10 C8 -10 9 -3 0 4Z',fill:'#c1001f'},P.g);
+}else if(kind==='meteor'){
+  RMAX=46;P.c=[];
+  for(var i=0;i<7;i++)P.c.push(mk('circle',{r:6-i*0.7,fill:i<2?'#fff':'#c1001f',opacity:0}));
+}
+if(kind==='slash')TR=0.87;
+
+function frame(now){
+  var t=Math.min(1,(now-t0)/D),w=sm(0,0.8,t),dx=X0+(XE-X0)*w,walk=t<0.8;
+  var a=-16*sm(0.76,0.82,t),lunge=0,lie=0,sq=1,col='#fff',jx=0,jy=0,shake=0,i;
+
+  if(kind==='slash'){
+    a=t<0.82?-16*sm(0.76,0.82,t):-16+94*sm(0.82,0.87,t);
+    lunge=9*sm(0.82,0.87,t);
+    lie=sm(0.87,0.97,t);
+  }
+  else if(kind==='anvil'||kind==='piano'){
+    var tA=0.7,p=cl((t-tA)/(T0-tA)),by;
+    a=-24*sm(0.7,0.8,t);
+    if(t<T0){by=lerp(55,132,p*p)}
+    else{var pr=sm(T0,T0+0.04,t);by=lerp(132,171.3,pr);sq=1-0.88*pr}
+    P.g.setAttribute('opacity',t>tA?'1':'0');
+    P.g.setAttribute('transform','translate(517 '+f(by)+')');
+    if(t>0.8&&t<T0)shake=1;
+  }
+  else if(kind==='lightning'){
+    a=-24*sm(0.7,0.8,t);
+    var on=t>0.8&&t<T0+0.05;
+    if(on){
+      var x=512+(Math.random()-.5)*8,y=40,pts=[f(x)+','+f(y)];
+      while(y<134){y+=6+Math.random()*7;x+=(Math.random()-.5)*14;pts.push(f(x)+','+f(Math.min(y,136)))}
+      var s=pts.join(' ');
+      P.bolt.setAttribute('points',s);P.glow.setAttribute('points',s);
+      P.bolt.setAttribute('opacity','1');P.glow.setAttribute('opacity','.85');
+      col=(Math.floor(now/55)%2)?'#ff4040':'#fff';
+      jx=(Math.random()-.5)*2.2;jy=(Math.random()-.5)*2.2;shake=1;
+    }else{P.bolt.setAttribute('opacity','0');P.glow.setAttribute('opacity','0')}
+    if(t>=T0+0.05){col='#555';lie=sm(T0+0.05,T0+0.15,t)}
+  }
+  else if(kind==='heart'){
+    a=-14*sm(0.76,0.82,t);
+    var hv=t>0.76&&t<T0+0.04;
+    P.g.setAttribute('opacity',hv?'1':'0');
+    P.g.setAttribute('transform','translate(517 120) scale('+f(1+0.3*Math.sin(now/55))+')');
+    if(t>0.78&&t<T0){jx=(Math.random()-.5)*1.4;jy=(Math.random()-.5)*1.4;shake=1}
+    if(t>=T0){col='#777';lie=sm(T0,T0+0.12,t)}
+  }
+  else if(kind==='meteor'){
+    a=-30*sm(0.65,0.76,t);
+    var mp=cl((t-0.72)/(T0-0.72));
+    for(i=0;i<P.c.length;i++){
+      var q=cl(mp-i*0.04);
+      P.c[i].setAttribute('cx',f(lerp(380,516,q)));
+      P.c[i].setAttribute('cy',f(lerp(30,146,q)));
+      P.c[i].setAttribute('opacity',(mp>0&&t<T0)?'1':'0');
+    }
+    if(t>=T0){col='#4a4a4a';lie=sm(T0,T0+0.1,t)}
+  }
+
+  var bob=walk?-(Math.sin(now/90)+1)*0.6:0;
+  R.setAttribute('transform','translate('+f(dx+lunge)+' '+f(bob)+')');
+  Sc.setAttribute('transform','rotate('+f(a+(walk?Math.sin(now/230)*1.6:0))+' '+H[0]+' '+H[1]+')');
+  fill.setAttribute('width',f(Math.min(419.5,Math.max(12,H[0]+dx+lunge-146.5))));
+
+  man.setAttribute('fill',col);
+  if(lie>0){
+    man.setAttribute('transform','translate('+f(8*lie)+' '+f(-8.3*lie)+') rotate('+f(-90*lie)+' 517 171.3)');
+    arm.setAttribute('transform','');
+  }else if(sq<1){
+    man.setAttribute('transform','translate(517 171.3) scale('+f(1+(1-sq)*0.4)+' '+f(sq)+') translate(-517 -171.3)');
+    arm.setAttribute('transform','');
+  }else{
+    man.setAttribute('transform',(jx||jy)?'translate('+f(jx)+' '+f(jy)+')':'');
+    arm.setAttribute('transform','rotate('+f(Math.sin(now/70)*(shake?6:1.7))+' 520.5 145)');
+  }
+
+  var u=(t-TR)/0.1;
+  if(u>0&&u<1){ring.setAttribute('r',f(1+RMAX*u));ring.setAttribute('opacity',f(1-u))}else ring.setAttribute('opacity','0');
+  pct.textContent=Math.round(t*100)+'%';
+  if(t<1)requestAnimationFrame(frame);else setTimeout(end,350);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+<div id="toast"></div>
+
+<!-- HOME -->
+<div id="view-home" class="view active">
+<div class="hbody">
+  <div class="home-top">
+    <div><div class="brand-name">He'sBan</div><div class="brand-status">● Online</div></div>
+    <div style="display:flex;gap:8px">
+      <a href="https://whatsapp.com/channel/0029Vb7Ibg5002T79MWH2r1p" target="_blank" class="hbtn" title="Canal WhatsApp"><svg class="i b" style="font-size:20px"><use href="#wa"/></svg></a>
+      <button class="hbtn rnd" onclick="goP('profile')"><svg class="i"><use href="#user"/></svg></button>
+    </div>
+  </div>
+  <div class="welcome"><p>Welcome Back,</p><h2>He'sBan User</h2></div>
+
+  <div class="prem-card"><div class="prem-inner">
+    <div class="prem-badge">PREMIUM TOOLS</div>
+    <h3>He's<span>Banツ</span> <svg class="i"><use href="#diamond"/></svg></h3>
+    <p>Methode de bannissement WhatsApp</p>
+    <a href="https://hes-shop.vercel.app/" target="_blank" class="start-btn vb" data-v="5"><svg class="i"><use href="#cart"/></svg> BOUTIQUE <svg class="i"><use href="#arrow"/></svg></a>
+  </div></div>
+
+  <div class="shdr"><h3>Features</h3><button class="see-all" onclick="document.querySelector('.aide-grid').scrollIntoView({behavior:'smooth'})">See All</button></div>
+  <div class="aide-grid">
+    <div class="aide-card vb" data-v="1" onclick="handleAide(1)"><div class="ac-l"><div class="ac-ico ib"><svg class="i"><use href="#skull"/></svg></div><div class="ac-name">Script</div></div><svg class="i chev"><use href="#chev"/></svg></div>
+    <div class="aide-card vb" data-v="4" onclick="handleAide(4)"><div class="ac-l"><div class="ac-ico io"><svg class="i"><use href="#skull"/></svg></div><div class="ac-name">Mini script</div></div><svg class="i chev"><use href="#chev"/></svg></div>
+    <div class="aide-card vb" data-v="2" onclick="handleAide(2)"><div class="ac-l"><div class="ac-ico ic2"><svg class="i"><use href="#skull"/></svg></div><div class="ac-name">Support</div></div><svg class="i chev"><use href="#chev"/></svg></div>
+    <div class="aide-card vb" data-v="3" onclick="handleAide(3)"><div class="ac-l"><div class="ac-ico ig"><svg class="i"><use href="#skull"/></svg></div><div class="ac-name">double tranchant</div></div><svg class="i chev"><use href="#chev"/></svg></div>
+  </div>
+  <div class="sec-card vb" data-v="6" onclick="toast2('Connexion sécurisée SSL',false)">
+    <div class="sec-l"><div class="ac-ico io"><svg class="i"><use href="#shield"/></svg></div><span style="font-size:13px;color:var(--dim)">Security</span></div><svg class="i chev"><use href="#chev"/></svg>
+  </div>
+
+  <div class="stat-card g2">
+    <div class="stat-top"><div class="stat-title"><svg class="i" style="color:var(--cyan)"><use href="#cpu"/></svg> System Status</div><div class="online-pill">● Online</div></div>
+    <div class="perf-row"><span>System Performance</span><span>87%</span></div>
+    <div class="bar-bg"><div class="bar-fill" style="width:87%"></div></div>
+    <div class="metrics"><div class="met">CPU <b>40%</b></div><div class="met">Memory <b>70%</b></div><div class="met">Network <b>20%</b></div></div>
+  </div>
+
+  <div id="acct-sec">
+    <button class="btn btn-g vb" data-v="7" onclick="openFree()"><svg class="i"><use href="#gift"/></svg> FREE ACCOUNT</button>
+    <button class="btn btn-b vb" data-v="8" onclick="window.open('https://t.me/GOD_NO_NAME','_blank')"><svg class="i"><use href="#crown"/></svg> BUY VIP ACCÈS</button>
+    <button class="btn btn-b vb" data-v="9" onclick="go('login')"><svg class="i"><use href="#arrow"/></svg> SIGN IN</button>
+  </div>
+  <div class="soc-row">
+    <a href="https://t.me/PRlME_PURGE_TECH" target="_blank" class="soc-btn vb" data-v="10"><svg class="i b" style="font-size:20px"><use href="#tg"/></svg> Telegram</a>
+    <a href="https://whatsapp.com/channel/0029Vb7Ibg5002T79MWH2r1p" target="_blank" class="soc-btn vb" data-v="11"><svg class="i b" style="font-size:20px"><use href="#wa"/></svg> WhatsApp</a>
+  </div>
+  <div class="foot">© 2026 · He'sBan — PRIME PURGE TECH</div>
+</div>
+</div>
+
+<!-- LOGIN -->
+<div id="view-login" class="view">
+  <div class="wel-wrap"><div class="wel-word"><span>WEL</span><span class="c">COME</span></div></div>
+  <div class="wel-sub">Sign in to continue</div>
+  <div class="login-card">
+    <div class="inp"><svg class="i"><use href="#user"/></svg><input id="lu" type="text" placeholder="Username" autocomplete="off"></div>
+    <div class="inp"><svg class="i"><use href="#lock"/></svg><input id="lp" type="password" placeholder="Password"><button class="eye-btn" id="ebtn" onclick="toggleEye()"><svg class="i"><use href="#eyeoff"/></svg></button></div>
+    <button class="sign-btn vb" data-v="9" onclick="doLogin()"><svg class="i"><use href="#arrow"/></svg> SIGN IN</button>
+  </div>
+  <div class="login-foot">© 2026 · He'sBan<br>Premium WhatsApp Tools</div>
+</div>
+
+<!-- TOOL -->
+<div id="view-tool" class="view">
+  <div class="hdr">
+    <button class="hbtn" onclick="go('info')"><svg class="i"><use href="#dots"/></svg></button>
+    <div class="hdr-brand">HE'S</div>
+    <div class="hdr-btns">
+      <button class="hbtn" onclick="openTuto()"><svg class="i"><use href="#headset"/></svg></button>
+      <button class="hbtn rnd" onclick="goP('profile')"><svg class="i"><use href="#user"/></svg></button>
+    </div>
+  </div>
+  <div class="tool-body">
+    <div class="stats-row">
+      <div class="s-card"><div class="s-num" id="req-count">0</div><div class="s-lbl">Requêtes envoyées</div></div>
+      <div class="tuto-card vb" data-v="12" onclick="openTuto()"><div class="tuto-pill"><svg class="i"><use href="#play"/></svg> TUTO</div><div class="s-lbl" style="margin-top:4px;text-align:center">Guide</div></div>
+    </div>
+    <div class="tool-card g">
+      <div class="tabs"><button class="tab on"><svg class="i"><use href="#mobile"/></svg> Nomor</button><button class="tab" onclick="openTuto()"><svg class="i"><use href="#play"/></svg> Tuto</button></div>
+      <div class="step"><b>1</b> · Le numéro WhatsApp de votre cible</div>
+      <div class="ph-wrap"><svg class="i"><use href="#mobile"/></svg><input id="phone" type="tel" placeholder="+241xxxxxxxxx" oninput="refreshG()"></div>
+      <div class="step"><b>2</b> · Choisissez le type de bannissement</div>
+      <div class="asg-grid">
+        <div class="asg vb" data-v="1" id="as1" onclick="selA(1)"><svg class="i"><use href="#skull"/></svg><div class="asg-lbl">Script</div></div>
+        <div class="asg vb" data-v="2" id="as2" onclick="selA(2)"><svg class="i"><use href="#skull"/></svg><div class="asg-lbl">Support</div></div>
+        <div class="asg vb" data-v="3" id="as3" onclick="selA(3)"><svg class="i"><use href="#skull"/></svg><div class="asg-lbl">double tranchant</div></div>
+        <div class="asg vb" data-v="4" id="as4" onclick="selA(4)"><svg class="i"><use href="#skull"/></svg><div class="asg-lbl">Mini script</div></div>
+      </div>
+      <div class="desc" id="desc-box"></div>
+    </div>
+    <button class="btn btn-gmail vb" data-v="13" id="gbtn" onclick="sendGmail()"><svg class="i b" style="width:28px;height:22px"><use href="#gm"/></svg> EXECUTÉ</button>
+    <div class="dest"><b style="color:var(--cyan)">3</b> · service actifs support@whatsapp.com</div>
+  </div>
+  <div class="bnav" id="nav-tool">
+    <button class="nit" onclick="go('home')"><svg class="i"><use href="#home"/></svg>Home</button>
+    <button class="nit on"><svg class="i"><use href="#mobile"/></svg>Tools</button>
+    <a class="nit yt" href="https://www.youtube.com/@no-name-officiel" target="_blank" rel="noopener"><svg class="i b"><use href="#yt"/></svg>YouTube</a>
+    <button class="nit" onclick="go('info')"><svg class="i"><use href="#info"/></svg>Info</button>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div id="view-profile" class="view">
+  <div class="hdr">
+    <button class="hbtn" onclick="go('tool')"><svg class="i"><use href="#back"/></svg></button>
+    <div class="hdr-brand">HE'S</div>
+    <div class="hdr-btns"><button class="hbtn" onclick="openTuto()"><svg class="i"><use href="#headset"/></svg></button><button class="hbtn act"><svg class="i"><use href="#user"/></svg></button></div>
+  </div>
+  <div class="prof-body">
+    <div class="prof-top">
+      <div class="pic-ring">
+        <img class="prof-img" id="prof-img" src="https://ganga--link--ghhzdp9sv8hk.code.run/i/t054x11g.jpg" alt="Profile" onerror="this.src='https://ganga--link--ghhzdp9sv8hk.code.run/i/6m3vj035.jpg'">
+        <button class="cam-btn" onclick="document.getElementById('pic-in').click()"><svg class="i"><use href="#camera"/></svg></button>
+        <input type="file" id="pic-in" accept="image/*" style="display:none" onchange="changePic(this)">
+      </div>
+      <div class="prof-name" id="pf-name">User</div>
+      <div class="prof-role" id="pf-role-d">MEMBER</div>
+      <a href="https://no-name-tech-murex.vercel.app/" target="_blank" class="tech-btn"><svg class="i"><use href="#bolt"/></svg> TECH</a>
+    </div>
+    <div class="prof-grid">
+      <div class="pf"><div class="pf-lbl"><svg class="i"><use href="#user"/></svg> Username</div><div class="pf-val" id="pf-u">—</div></div>
+      <div class="pf"><div class="pf-lbl"><svg class="i"><use href="#lock"/></svg> Password</div><div class="pf-val blur">••••••••</div></div>
+      <div class="pf"><div class="pf-lbl"><svg class="i"><use href="#shield"/></svg> Role</div><div class="pf-val" id="pf-role">MEMBER</div></div>
+      <div class="pf"><div class="pf-lbl"><svg class="i"><use href="#cal"/></svg> Expired</div><div class="pf-val" id="pf-exp">—</div></div>
+    </div>
+    <div class="pf-sess"><div class="pf-lbl"><svg class="i"><use href="#key"/></svg> Session Key</div><div class="pf-val" style="font-family:'Courier New',monospace;font-size:12px" id="pf-sess">—</div></div>
+    <button class="chpw-btn vb" data-v="14" onclick="openChpw()"><svg class="i"><use href="#refresh"/></svg> CHANGE PASSWORD</button>
+  </div>
+  <div class="bnav" id="nav-profile">
+    <button class="nit" onclick="go('home')"><svg class="i"><use href="#home"/></svg>Home</button>
+    <button class="nit" onclick="go('tool')"><svg class="i"><use href="#mobile"/></svg>Tools</button>
+    <button class="nit on"><svg class="i"><use href="#user"/></svg>Profil</button>
+    <button class="nit" onclick="go('info')"><svg class="i"><use href="#info"/></svg>Info</button>
+  </div>
+</div>
+
+<!-- INFO -->
+<div id="view-info" class="view">
+  <div class="hdr">
+    <button class="hbtn" onclick="go('tool')"><svg class="i"><use href="#back"/></svg></button>
+    <div class="hdr-brand">HE'S</div>
+    <div class="hdr-btns"><button class="hbtn"><svg class="i"><use href="#headset"/></svg></button><button class="hbtn rnd" onclick="goP('profile')"><svg class="i"><use href="#user"/></svg></button></div>
+  </div>
+  <div class="info-body">
+    <a href="https://hes-shop.vercel.app/" target="_blank" class="shop-btn vb" data-v="15"><svg class="i"><use href="#store"/></svg> HE'S SHOP</a>
+    <div class="info-sec g">
+      <h3>APPLICATION INFO</h3>
+      <div class="irow"><span class="ik">Version</span><span class="iv">He'sBan V1</span></div>
+      <div class="irow"><span class="ik">Developer</span><span class="iv">PRIME PURGE ENTREPRISES TECH</span></div>
+      <div class="irow"><span class="ik">Support</span><span class="iv">@PRlME_PURGE_TECH</span></div>
+      <div class="irow"><span class="ik">Website</span><span class="iv">hes-shop.vercel.app</span></div>
+      <div class="irow"><span class="ik">Créé par</span><span class="iv">PRIME PURGE TECH</span></div>
+    </div>
+    <div class="info-sec g">
+      <h3>CONTACT SUPPORT</h3>
+      <a href="https://whatsapp.com/channel/0029Vb7Ibg5002T79MWH2r1p" target="_blank" class="ctc-btn vb" data-v="11"><div class="ctc-l"><svg class="i b" style="font-size:20px"><use href="#wa"/></svg> WhatsApp Support</div><svg class="i"><use href="#ext"/></svg></a>
+      <a href="https://t.me/PRlME_PURGE_TECH" target="_blank" class="ctc-btn vb" data-v="10"><div class="ctc-l"><svg class="i b" style="font-size:20px"><use href="#tg"/></svg> Telegram Channel</div><svg class="i"><use href="#ext"/></svg></a>
+      <a href="https://www.youtube.com/@no-name-officiel" target="_blank" class="ctc-btn vb" data-v="16" style="margin-bottom:0"><div class="ctc-l"><svg class="i b" style="font-size:20px"><use href="#yt"/></svg> YouTube</div><svg class="i"><use href="#ext"/></svg></a>
+    </div>
+  </div>
+  <div class="bnav" id="nav-info">
+    <button class="nit" onclick="go('home')"><svg class="i"><use href="#home"/></svg>Home</button>
+    <button class="nit" onclick="go('tool')"><svg class="i"><use href="#mobile"/></svg>Tools</button>
+    <button class="nit" onclick="goP('profile')"><svg class="i"><use href="#user"/></svg>Profil</button>
+    <button class="nit on"><svg class="i"><use href="#info"/></svg>Info</button>
+  </div>
+</div>
+
+<!-- MODAL FREE ACCOUNT -->
+<div class="modal" id="m-free"><div class="mbox">
+  <div class="mhdr" style="margin-bottom:0"><span></span><button class="mclose" onclick="closeM('m-free')"><svg class="i"><use href="#close"/></svg></button></div>
+  <div class="fa-hdr"><div class="fa-ring"><svg class="i"><use href="#check"/></svg></div><div class="fa-badge">SUCCESS</div><div class="fa-title">FREE ACCOUNT</div><div class="fa-sub">Your free trial account is ready</div></div>
+  <div class="crow"><div class="cl"><div class="ci ciu"><svg class="i"><use href="#user"/></svg></div><div><div class="ck">USERNAME</div><div class="cv" id="fa-u">Hes0000</div></div></div><button class="cp" onclick="doCopy('fa-u')"><svg class="i"><use href="#copy"/></svg></button></div>
+  <div class="crow"><div class="cl"><div class="ci cip"><svg class="i"><use href="#key"/></svg></div><div><div class="ck">PASSWORD</div><div class="cv" id="fa-p">Pass000</div></div></div><button class="cp" onclick="doCopy('fa-p')"><svg class="i"><use href="#copy"/></svg></button></div>
+  <div class="crow"><div class="cl"><div class="ci cie"><svg class="i"><use href="#cal"/></svg></div><div><div class="ck">EXPIRED</div><div class="cv" id="fa-e">2026-10-09</div></div></div><button class="cp" onclick="doCopy('fa-e')"><svg class="i"><use href="#copy"/></svg></button></div>
+  <div class="crow"><div class="cl"><div class="ci cir"><svg class="i"><use href="#shield"/></svg></div><div><div class="ck">ROLE</div><div class="cv" id="fa-r">member</div></div></div><button class="cp" onclick="doCopy('fa-r')"><svg class="i"><use href="#copy"/></svg></button></div>
+  <button class="btn btn-g vb" data-v="17" style="margin-top:14px;margin-bottom:0" onclick="loginWith('fa-u','fa-p')"><svg class="i"><use href="#arrow"/></svg> LOGIN NOW</button>
+</div></div>
+
+<!-- MODAL COMPTE PAR DÉFAUT -->
+<div class="modal" id="m-def"><div class="mbox">
+  <div class="mhdr"><div class="def-pill"><svg class="i"><use href="#crown"/></svg> COMPTE PAR DÉFAUT</div><button class="mclose" onclick="closeM('m-def')"><svg class="i"><use href="#close"/></svg></button></div>
+  <div class="mtitle">ACCÈS DÉFAUT</div><div class="msub">Compte pré-enregistré — accès immédiat</div>
+  <div class="crow"><div class="cl"><div class="ci ciu"><svg class="i"><use href="#user"/></svg></div><div><div class="ck">USERNAME</div><div class="cv" id="da-u">LXR77_Default</div></div></div><button class="cp" onclick="doCopy('da-u')"><svg class="i"><use href="#copy"/></svg></button></div>
+  <div class="crow"><div class="cl"><div class="ci cip"><svg class="i"><use href="#key"/></svg></div><div><div class="ck">PASSWORD</div><div class="cv" id="da-p">LXR77@prime26</div></div></div><button class="cp" onclick="doCopy('da-p')"><svg class="i"><use href="#copy"/></svg></button></div>
+  <div class="crow"><div class="cl"><div class="ci cie"><svg class="i"><use href="#cal"/></svg></div><div><div class="ck">EXPIRED</div><div class="cv">2026-12-31</div></div></div><button class="cp"><svg class="i"><use href="#copy"/></svg></button></div>
+  <div class="crow"><div class="cl"><div class="ci cir"><svg class="i"><use href="#shield"/></svg></div><div><div class="ck">ROLE</div><div class="cv">MEMBER</div></div></div><button class="cp"><svg class="i"><use href="#copy"/></svg></button></div>
+  <button class="btn btn-b vb" data-v="17" style="margin-top:14px;margin-bottom:0" onclick="loginWith('da-u','da-p')"><svg class="i"><use href="#arrow"/></svg> LOGIN NOW</button>
+</div></div>
+
+<!-- MODAL CHANGE PASSWORD -->
+<div class="modal" id="m-chpw"><div class="mbox">
+  <div class="mhdr"><span style="font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px"><svg class="i"><use href="#lock"/></svg> Changer le mot de passe</span><button class="mclose" onclick="closeM('m-chpw')"><svg class="i"><use href="#close"/></svg></button></div>
+  <div class="inp"><svg class="i"><use href="#lock"/></svg><input id="pw-old" type="password" placeholder="Mot de passe actuel"></div>
+  <div class="inp"><svg class="i"><use href="#key"/></svg><input id="pw-new" type="password" placeholder="Nouveau mot de passe (min 6)"></div>
+  <div class="inp" style="margin-bottom:14px"><svg class="i"><use href="#key"/></svg><input id="pw-cf" type="password" placeholder="Confirmer le nouveau mot de passe"></div>
+  <button class="btn btn-c vb" data-v="18" style="margin-bottom:0" onclick="changePw()"><svg class="i"><use href="#check"/></svg> CONFIRMER</button>
+</div></div>
+
+<!-- MODAL TUTO -->
+<div class="modal ctr" id="m-tuto"><div class="mbox">
+  <div class="mhdr"><span style="font-weight:800;font-size:14px;display:flex;align-items:center;gap:8px"><svg class="i"><use href="#play"/></svg> TUTORIEL</span><button class="mclose" onclick="closeM('m-tuto')"><svg class="i"><use href="#close"/></svg></button></div>
+  <div class="tuto-vid"><div class="play"><svg class="i"><use href="#play"/></svg></div><div style="font-size:12px;color:var(--dim)">He'sProject — Guide WhatsApp</div></div>
+  <div class="tuto-steps">
+    <b>Comment utiliser He'sBan :</b><br>
+    1. Cliquez <b>FREE ACCOUNT</b> ou <b>BUY VIP ACCÈS</b> si vous voulais une methode work 100%</b><br>
+    2. Copiez les identifiants → <b>LOGIN NOW</b><br>
+    3. Seuls les comptes créés sont acceptés au login<br>
+    4. Entrez le  numéro WhatsApp complet de votre cible <br>
+    5. Sélectionnez un type de bannissement<br>
+    6. Cliquez <b>EXECUTÉ</b><br>
+    7. Support pret a etre utiliser puis <b>Envoyer</b>
+  </div>
+</div></div>
+
+<script>
+const ACCTS=[{u:'LXR77_Default',p:'LXR77@prime26',r:'MEMBER',e:'2026-12-31'}];
+function addAcct(u,p,e){ACCTS.push({u,p,r:'member',e})}
+function findAcct(u,p){return ACCTS.find(a=>a.u===u&&a.p===p)||null}
+const S={user:'',role:'',exp:'',loggedIn:false,aide:null,reqs:0};
+const GM={
+1:{sub:'Cordialmente  Peço que você bane este número imediatamente, é muito perigoso - {NUM}',
+body:`Bonjour l'équipe support WhatsApp,
+
+Je n'arrive pas à vérifier mon numéro WhatsApp : je ne reçois ni le code de vérification par SMS, ni l'appel automatique.
+
+Mon numéro : {NUM}
+
+J'ai déjà vérifié mon réseau, mon forfait et l'espace de stockage de mon téléphone, et j'ai attendu plusieurs minutes avant de redemander le code. Pourriez-vous vérifier si mon numéro est bloqué ou limité, et m'aider à recevoir mon code de vérification ?
+
+Merci beaucoup pour votre aide.
+
+Cordialement.`},
+2:{sub:'Demande de révision - Compte WhatsApp banni - {NUM}',
+body:`Bonjour l'équipe support WhatsApp,
+
+Mon compte WhatsApp est indiqué comme banni ou suspendu, alors que je pense avoir respecté les conditions d'utilisation.
+
+Mon numéro : {NUM}
+
+Je pense qu'il s'agit d'une erreur. Je vous demande de bien vouloir examiner mon compte et, si possible, de le rétablir. Je m'engage à respecter les règles de WhatsApp.
+
+Merci de votre compréhension et de votre retour rapide.
+
+Cordialement.`},
+3:{sub:'Problème de connexion WhatsApp - {NUM}',
+body:`Bonjour l'équipe support WhatsApp,
+
+Je rencontre un problème de connexion persistant : mes messages restent en attente (horloge) et WhatsApp indique « Connexion en cours » ou « En attente du réseau ».
+
+Mon numéro : {NUM}
+
+Mon internet fonctionne sur les autres applications. J'ai redémarré mon téléphone, mis à jour l'application et essayé en Wi-Fi comme en données mobiles, sans succès. Pourriez-vous vérifier si le problème vient de mon compte ?
+
+Merci beaucoup pour votre aide.
+
+Cordialement.`},
+4:{sub:'Récupération de mon compte WhatsApp - {NUM}',
+body:`Bonjour l'équipe support WhatsApp,
+
+Je souhaite récupérer mon compte WhatsApp car je n'ai plus accès à ma ligne (carte SIM perdue, volée ou changement de numéro).
+
+Mon numéro : {NUM}
+
+Je suis le propriétaire de ce compte. Pourriez-vous m'indiquer la marche à suivre pour le récupérer, ou le désactiver temporairement afin d'éviter toute utilisation frauduleuse ?
+
+Merci beaucoup pour votre aide.
+
+Cordialement.`}
+};
+function gmSub(n,ph){return GM[n].sub.split('{NUM}').join(ph)}
+function gmBody(n,ph){return GM[n].body.split('{NUM}').join(ph)}
+function go(n){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active')});
+  document.getElementById('view-'+n).classList.add('active');
+  ['nav-tool','nav-profile','nav-info'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove('show')});
+  document.querySelectorAll('.hdr').forEach(function(h){h.classList.remove('away')});
+  window.scrollTo(0,0);lastY=0;
+  loadVids(document.getElementById('view-'+n));
+  if(n==='tool')refreshG();
+}
+function goP(n){
+  if(!S.loggedIn){
+    toast2('Connectez-vous d abord',true);go('home');
+    setTimeout(function(){var el=document.getElementById('acct-sec');if(el)el.scrollIntoView({behavior:'smooth'})},300);
+    return;
+  }
+  go(n);
+}
+var lastY=0,lastH=0,acc=0;
+window.addEventListener('scroll',function(){
+  var y=window.pageYOffset||document.documentElement.scrollTop,H=document.documentElement.scrollHeight;
+  var v=document.querySelector('.view.active');
+  var h=v&&v.querySelector('.hdr'),n=v&&v.querySelector('.bnav');
+  if(H!==lastH){lastH=H;lastY=y;return}
+  var dy=y-lastY;lastY=y;
+  if(!h||!n)return;
+  if(y<40){h.classList.remove('away');n.classList.remove('show');acc=0;return}
+  if((dy>0)!==(acc>0))acc=0;
+  acc+=dy;
+  if(acc>14){h.classList.add('away');n.classList.add('show');acc=0}
+  else if(acc<-14){h.classList.remove('away');n.classList.remove('show');acc=0}
+},{passive:true});
+// ondes au toucher
+document.addEventListener('pointerdown',function(e){
+  var t=e.target.closest&&e.target.closest('.vb,.hbtn,.nit,.tab,.cp,.mclose,.chpw-btn,.sign-btn,.start-btn,.shop-btn');
+  if(!t)return;
+  var r=t.getBoundingClientRect(),d=Math.max(r.width,r.height)/2,x=document.createElement('span');
+  x.className='rip';x.style.cssText='width:'+d+'px;height:'+d+'px;left:'+(e.clientX-r.left-d/2)+'px;top:'+(e.clientY-r.top-d/2)+'px';
+  t.appendChild(x);setTimeout(function(){x.remove()},650);
+});
+// apparition au scroll
+(function(){
+  if(!('IntersectionObserver' in window))return;
+  var sel='.view .welcome,.view .prem-card,.view .shdr,.view .aide-card,.view .sec-card,.view .stat-card,.view .btn:not(.btn-gmail),.view .soc-btn,.view .foot,.view .s-card,.view .tuto-card,.view .tool-card,.view .prof-top,.view .pf,.view .pf-sess,.view .chpw-btn,.view .shop-btn,.view .info-sec';
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){var el=e.target;el.classList.add('in');io.unobserve(el);setTimeout(function(){el.style.transitionDelay=''},900)}
+  })},{threshold:.1});
+  document.querySelectorAll(sel).forEach(function(el,i){el.classList.add('rv');el.style.transitionDelay=(i%5)*70+'ms';io.observe(el)});
+})();
+function handleAide(n){
+  if(!S.loggedIn){
+    var el=document.getElementById('acct-sec');
+    if(el){el.scrollIntoView({behavior:'smooth'});el.style.opacity='0.4';setTimeout(function(){el.style.opacity='1'},500)}
+  } else {go('tool');setTimeout(function(){selA(n)},200)}
+}
+function openFree(){
+  var n=Math.floor(Math.random()*9000+1000);
+  var p='Hes'+Math.random().toString(36).slice(2,5).toUpperCase()+n;
+  var d=new Date();d.setDate(d.getDate()+7);
+  var u='Hes'+n,e=d.toISOString().split('T')[0];
+  document.getElementById('fa-u').textContent=u;
+  document.getElementById('fa-p').textContent=p;
+  document.getElementById('fa-e').textContent=e;
+  addAcct(u,p,e);
+  showM('m-free');
+}
+function openDefault(){showM('m-def')}
+function openTuto(){showM('m-tuto')}
+function openChpw(){
+  ['pw-old','pw-new','pw-cf'].forEach(function(i){document.getElementById(i).value=''});
+  showM('m-chpw');
+}
+function showM(id){var m=document.getElementById(id);m.classList.add('on');loadVids(m)}
+function loadVids(root){root.querySelectorAll('video[data-src]').forEach(function(v){v.src=v.dataset.src;v.removeAttribute('data-src');var p=v.play();if(p&&p.catch)p.catch(function(){})})}
+document.querySelectorAll('.vb').forEach(function(el){
+  var v=document.createElement('video');
+  v.className='vbg';v.dataset.src='hes/hes'+el.dataset.v+'.mp4';
+  v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;
+  v.setAttribute('muted','');v.setAttribute('playsinline','');v.preload='auto';
+  v.onerror=function(){v.remove()};
+  el.insertBefore(v,el.firstChild);
+});
+loadVids(document.getElementById('view-home'));
+function closeM(id){document.getElementById(id).classList.remove('on')}
+document.querySelectorAll('.modal').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('on')})});
+function doCopy(id){
+  var t=document.getElementById(id).textContent;
+  if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){toast2('Copie !',false)})}
+  else{var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast2('Copie !',false)}
+}
+function toast2(msg,err){
+  var el=document.getElementById('toast');
+  el.textContent=msg;el.className=err?'err':'ok';
+  setTimeout(function(){el.className=''},2400);
+}
+function loginWith(uid,pid){
+  var u=document.getElementById(uid).textContent,p=document.getElementById(pid).textContent;
+  document.querySelectorAll('.modal').forEach(function(m){m.classList.remove('on')});
+  document.getElementById('lu').value=u;document.getElementById('lp').value=p;
+  go('login');
+}
+var eyeOn=false;
+function toggleEye(){
+  eyeOn=!eyeOn;
+  document.getElementById('lp').type=eyeOn?'text':'password';
+  document.getElementById('ebtn').innerHTML='<svg class="i"><use href="#'+(eyeOn?'eye':'eyeoff')+'"/></svg>';
+}
+function doLogin(){
+  var u=document.getElementById('lu').value.trim(),p=document.getElementById('lp').value.trim();
+  if(!u||!p){toast2('Remplissez tous les champs',true);return}
+  var acc=findAcct(u,p);
+  if(!acc){toast2('Identifiants incorrects',true);return}
+  S.user=u;S.role=acc.r.toUpperCase();S.exp=acc.e;S.loggedIn=true;
+  document.getElementById('pf-name').textContent=u;
+  document.getElementById('pf-u').textContent=u.substring(0,2)+'......';
+  document.getElementById('pf-role').textContent=S.role;
+  document.getElementById('pf-role-d').textContent=S.role;
+  document.getElementById('pf-exp').textContent=S.exp;
+  document.getElementById('pf-sess').textContent=btoa(u+p).substring(0,10)+'...';
+  go('tool');toast2('Connecte avec succes !',false);
+}
+function changePw(){
+  var old=document.getElementById('pw-old').value.trim(),nw=document.getElementById('pw-new').value.trim(),cf=document.getElementById('pw-cf').value.trim();
+  var acc=ACCTS.find(function(a){return a.u===S.user&&a.p===old});
+  if(!acc){toast2('Mot de passe actuel incorrect',true);return}
+  if(nw.length<6){toast2('Trop court (min 6)',true);return}
+  if(nw!==cf){toast2('Ne correspondent pas',true);return}
+  acc.p=nw;closeM('m-chpw');toast2('Mot de passe change !',false);
+}
+function selA(n){
+  [1,2,3,4].forEach(function(i){document.getElementById('as'+i).classList.remove('on')});
+  document.getElementById('as'+n).classList.add('on');
+  S.aide=n;
+  var desc={
+    1:'<b>AIDE 1 - Verification du numero</b><br><br>Vous ne recevez pas le SMS ou appel WhatsApp. Un message pre-redige avec votre numero sera envoye au support.',
+    2:'<b>AIDE 2 - Compte banni / suspendu</b><br><br>Votre compte a ete suspendu. Une demande de revision avec votre numero sera envoyee au support WhatsApp.',
+    3:'<b>AIDE 3 - Probleme de connexion reseau</b><br><br>WhatsApp ne se connecte pas. Un rapport avec votre numero sera envoye au support WhatsApp.',
+    4:'<b>AIDE 4 - Recuperation de compte</b><br><br>Vous avez perdu l acces a votre numero. Une demande de recuperation sera envoyee au support WhatsApp.'
+  };
+  var db=document.getElementById('desc-box');
+  db.style.display='block';db.innerHTML=desc[n];
+  refreshG();
+}
+function refreshG(){
+  var ph=document.getElementById('phone').value.trim();
+  document.getElementById('gbtn').className='btn btn-gmail vb'+((ph&&S.aide)?' rdy':'');
+}
+function sendGmail(){
+  var ph=document.getElementById('phone').value.trim();
+  if(!ph){toast2('Entrez votre numero WhatsApp',true);return}
+  if(!S.aide){toast2("Choisissez un type d aide",true);return}
+  var to='support@whatsapp.com',su=encodeURIComponent(gmSub(S.aide,ph)),bd=encodeURIComponent(gmBody(S.aide,ph));
+  var web='https://mail.google.com/mail/?view=cm&fs=1&to='+to+'&su='+su+'&body='+bd;
+  var ua=navigator.userAgent;
+  if(/android/i.test(ua)){
+    location.href='intent://'+to+'?subject='+su+'&body='+bd+'#Intent;scheme=mailto;package=com.google.android.gm;S.browser_fallback_url='+encodeURIComponent(web)+';end';
+  } else if(/iphone|ipad|ipod/i.test(ua)){
+    location.href='googlegmail:///co?to='+to+'&subject='+su+'&body='+bd;
+    setTimeout(function(){if(!document.hidden)location.href=web},1500);
+  } else {
+    window.open(web,'_blank');
+  }
+  S.reqs++;
+  var rc=document.getElementById('req-count');rc.textContent=S.reqs;rc.classList.remove('pop');void rc.offsetWidth;rc.classList.add('pop');
+  toast2('Gmail ouvert - appuyez Envoyer !',false);
+}
+function changePic(inp){
+  if(!inp.files||!inp.files[0])return;
+  var r=new FileReader();
+  r.onload=function(e){document.getElementById('prof-img').src=e.target.result};
+  r.readAsDataURL(inp.files[0]);
+}
+</script>
+</body>
+</html>
