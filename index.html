@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>He's ban v1</title>
+<title>He'sProject</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--bg:#040810;--cyan:#00d4ff;--blue:#1e6fff;--green:#00d68f;--txt:#fff;--dim:#8aa3c2;
@@ -1549,7 +1549,7 @@ document.documentElement.style.overflow='hidden';
   </div>
   <div class="tool-body">
     <div class="stats-row">
-      <div class="s-card"><div class="s-num" id="req-count">0</div><div class="s-lbl">Préparation....</div></div>
+      <div class="s-card"><div class="s-num" id="req-count">0</div><div class="s-lbl">total</div></div>
       <div class="tuto-card vb" data-v="12" onclick="openTuto()"><div class="tuto-pill"><svg class="i"><use href="#play"/></svg> TUTO</div><div class="s-lbl" style="margin-top:4px;text-align:center">Guide</div></div>
     </div>
     <div class="tool-card g">
@@ -1885,7 +1885,7 @@ function selA(n){
     3:'<b>DOUBLE TRANCHANT - Une methode qui peut te touché toi meme</b><br><br>La methode double tranchant est une methode ou tu envoi le support a toi meme avec le numero de la cible dedans puis tu signale le support 10 foix et tu envoi a gmail puis tu signale la personne 5 foix.',
     4:'<b>MINI SCRIPT- Utiliser parfois dans les methode no dm or methode groupe report</b><br><br>il fonctionne aussi en tant que script normale il faut juste un numero solide.'
   };
-  var db=document.getElementById('desc-box');
+    var db=document.getElementById('desc-box');
   db.style.display='block';db.innerHTML=desc[n];
   refreshG();
 }
@@ -1899,15 +1899,14 @@ function sendGmail(){
   if(!S.aide){toast2("Choisissez un type d aide",true);return}
   var to='support@whatsapp.com',su=encodeURIComponent(gmSub(S.aide,ph)),bd=encodeURIComponent(gmBody(S.aide,ph));
   var web='https://mail.google.com/mail/?view=cm&fs=1&to='+to+'&su='+su+'&body='+bd;
-  var ua=navigator.userAgent;
-  if(/android/i.test(ua)){
-    location.href='intent://'+to+'?subject='+su+'&body='+bd+'#Intent;scheme=mailto;package=com.google.android.gm;S.browser_fallback_url='+encodeURIComponent(web)+';end';
-  } else if(/iphone|ipad|ipod/i.test(ua)){
-    location.href='googlegmail:///co?to='+to+'&subject='+su+'&body='+bd;
-    setTimeout(function(){if(!document.hidden)location.href=web},1500);
-  } else {
-    window.open(web,'_blank');
-  }
+  var ua=navigator.userAgent, mt='mailto:'+to+'?subject='+su+'&body='+bd, left=false;
+  var mobile=/android|iphone|ipad|ipod/i.test(ua);
+  if(mobile){
+    document.addEventListener('visibilitychange',function(){if(document.hidden)left=true},{once:true});
+    if(/android/i.test(ua)) location.href='intent://'+to+'?subject='+su+'&body='+bd+'#Intent;scheme=mailto;package=com.google.android.gm;end';
+    else location.href='googlegmail:///co?to='+to+'&subject='+su+'&body='+bd;
+    setTimeout(function(){ if(!left) location.href=mt; },1200);
+  } else { window.open(web,'_blank'); }
   S.reqs++;
   var rc=document.getElementById('req-count');rc.textContent=S.reqs;rc.classList.remove('pop');void rc.offsetWidth;rc.classList.add('pop');
   toast2('Gmail ouvert - appuyez Envoyer !',false);
