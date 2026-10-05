@@ -244,6 +244,9 @@ body::before{animation:drift 14s ease-in-out infinite alternate}
 .tuto-play.hide{display:none}
  #m-tuto .mbox{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(10,16,30,.97)}
 .tuto-play{-webkit-backdrop-filter:none;backdrop-filter:none}
+.tuto-vid,.tuto-vid video{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.tuto-vid{overflow:visible}
+#m-tuto{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:rgba(0,0,0,.85)}
 </style>
 </head>
 <body>
@@ -1681,7 +1684,7 @@ document.documentElement.style.overflow='hidden';
 <!-- MODAL TUTO -->
 <iv class="modal ctr" id="m-tuto"><iv class="mbox">
   <div class="mhdr"><span style="font-weight:800;font-size:14px;display:flex;align-items:center;gap:8px"><svg class="i"><use href="#play"/></svg> TUTORIEL</span><button class="mclose" onclick="closeM('m-tuto')"><svg class="i"><use href="#close"/></svg></button></div>
-  <div class="tuto-vid"><video id="tutoVid" playsinline controls preload="auto"><source src="hes/tuto.mp4" type="video/mp4"></video><button id="tutoPlay" class="tuto-play" onclick="playTuto()"><svg class="i"><use href="#play"/></svg></button><div id="tutoMiss" class="tuto-miss"><span id="tutoMsg">Vidéo introuvable</span></div></div>
+  <div class="tuto-vid"><video id="tutoVid" playsinline webkit-playsinline controls preload="metadata"></video>
   <div class="tuto-steps">
     <b>Comment utiliser He'sBan :</b><br>
     1. Cliquez <b>FREE ACCOUNT</b> ou <b>BUY VIP ACCÈS</b><br>
@@ -1826,14 +1829,116 @@ function playTuto(){
     if(q&&q.catch)q.catch(function(){if(pb)pb.classList.remove('hide')});
   });
 }
-function openTuto(){showM('m-tuto');var v=document.getElementById('tutoVid');if(v){try{v.currentTime=0}catch(e){}}setTimeout(playTuto,50);playTuto()}
+function openChpw(){
+  ['pw-old','pw-new','pw-cf'].forEach(function(i){document.getElementById(i).value=''});
+  showM('m-chpw');
+}
+function showM(id){var m=document.getElementById(id);m.classList.add('on');loadVids(m)}
+function loadVids(root){root.querySelectorAll('video[data-src]').forEach(function(v){v.src=v.dataset.src;v.removeAttribute('data-src');var p=v.play();if(p&&p.catch)p.catch(function(){})})}
+document.querySelectorAll('.vb').forEach(function(el){
+  var v=document.createElement('video');
+  v.className='vbg';v.dataset.src='hes/hes'+el.dataset.v+'.mp4';
+  v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;
+  v.setAttribute('muted','');v.setAttribute('playsinline','');v.preload='auto';
+  v.onerror=function(){v.remove()};
+  el.insertBefore(v,el.firstChild);
+});
+loadVids(document.getElementById('view-home'));
+function pauseTuto(){var v=document.getElementById('tutoVid');if(v&&!v.paused)v.pause()}
+function closeM(id){
+  document.getElementById(id).classList.remove('on');
+  var v=document.getElementById('tutoVid');if(v)v.pause();
+  bgVids(true);
+}
+document.querySelectorAll('.modal').forEach(function(m){
+  m.addEventListener('click',function(e){
+    if(e.target===m){m.classList.remove('on');pauseTuto();bgVids(true)}
+  })
+});
+function doCopy(id){
+  var t=document.getElementById(id).textContent;
+  if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){toast2('Copie !',false)})}
+  else{var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast2('Copie !',false)}
+}
+function toast2(msg,err){
+  var el=document.getElementById('toast');
+  el.textContent=msg;el.className=err?'err':'ok';
+  setTimeout(function(){el.className=''},2400);
+}
+function loginWith(uid,pid){
+  var u=document.getElementById(uid).textContent,p=document.getElementById(pid).textContent;
+  document.querySelectorAll('.modal').forEach(function(m){m.classList.remove('on')});
+  document.getElementById('lu').value=u;document.getElementById('lp').value=p;
+  go('login');
+}
+var eyeOn=false;
+function toggleEye(){
+  eyeOn=!eyeOn;
+  document.getElementById('lp').type=eyeOn?'text':'password';
+  document.getElementById('ebtn').innerHTML='<svg class="i"><use href="#'+(eyeOn?'eye':'eyeoff')+'"/></svg>';
+}
+function doLogin(){
+  var u=document.getElementById('lu').value.trim(),p=document.getElementById('lp').value.trim();
+  if(!u||!p){toast2('Remplissez tous les champs',true);return}
+  var acc=findAcct(u,p);
+  if(!acc){toast2('Identifiants incorrects',true);return}
+  S.user=u;S.role=acc.r.toUpperCase();S.exp=acc.e;S.loggedIn=true;
+  document.getElementById('pf-name').textContent=u;
+  document.getElementById('pf-u').textContent=u.substring(0,2)+'......';
+  document.getElementById('pf-role').textContent=S.role;
+  document.getElementById('pf-role-d').textContent=S.role;
+  document.getElementById('pf-exp').textContent=S.exp;
+  document.getElementById('pf-sess').textContent=btoa(u+p).substring(0,10)+'...';
+  go('tool');toast2('Connecte avec succes !',false);
+}
+function changePw(){
+  var old=document.getElementById('pw-old').value.trim(),nw=document.getElementById('pw-new').value.trim(),cf=document.getElementById('pw-cf').value.trim();
+  var acc=ACCTS.find(function(a){return a.u===S.user&&a.p===old});
+  if(!acc){toast2('Mot de passe actuel incorrect',true);return}
+  if(nw.length<6){toast2('Trop court (min 6)',true);return}
+  if(nw!==cf){toast2('Ne correspondent pas',true);return}
+  acc.p=nw;closeM('m-chpw');toast2('Mot de passe change !',false);
+}
+
+// ===== NOUVEAU : vidéos de fond + tuto avec sources de secours =====
+function bgVids(on){
+  document.querySelectorAll('video.vbg').forEach(function(x){
+    if(!on&&x.getAttribute('src')){x.pause();x.dataset.src=x.getAttribute('src');x.removeAttribute('src');x.load()}
+  });
+  if(on){var a=document.querySelector('.view.active');if(a)loadVids(a)}
+}
+
+var TUTO_LIST=['hes/tuto.mp4','hes/Tuto.mp4','hes/tuto.webm','hes/tuto.mov','https://files.catbox.moe/zziskw.mp4'];
+var tutoIdx=-1,tutoTimer=null;
+function tutoNext(){
+  var v=document.getElementById('tutoVid'),miss=document.getElementById('tutoMiss'),msg=document.getElementById('tutoMsg');
+  clearTimeout(tutoTimer);
+  tutoIdx++;
+  if(tutoIdx>=TUTO_LIST.length){
+    msg.textContent='Vidéo illisible : exporte en MP4 (H.264 + AAC)';
+    miss.style.display='flex';document.getElementById('tutoPlay').classList.add('hide');return;
+  }
+  miss.style.display='none';
+  v.removeAttribute('src');v.src=TUTO_LIST[tutoIdx];v.load();
+  playTuto();
+  if(tutoIdx<TUTO_LIST.length-1){
+    tutoTimer=setTimeout(function(){if(v.readyState<2||!v.videoWidth)tutoNext()},6000);
+  }
+}
+function openTuto(){
+  showM('m-tuto');bgVids(false);
+  var v=document.getElementById('tutoVid');
+  if(tutoIdx<0)tutoNext();else{try{v.currentTime=0}catch(e){}playTuto();}
+}
 (function(){
-  var v=document.getElementById('tutoVid'),pb=document.getElementById('tutoPlay');
-  if(!v||!pb)return;
+  var v=document.getElementById('tutoVid'),pb=document.getElementById('tutoPlay'),miss=document.getElementById('tutoMiss');
+  if(!v)return;
   v.addEventListener('play',function(){pb.classList.add('hide')});
   v.addEventListener('pause',function(){pb.classList.remove('hide')});
   v.addEventListener('ended',function(){pb.classList.remove('hide')});
-  v.addEventListener('error',function(){v.style.display='none';pb.classList.add('hide');document.getElementById('tutoMiss').style.display='flex'});
+  v.addEventListener('error',tutoNext);
+  v.addEventListener('loadedmetadata',function(){if(!v.videoWidth)tutoNext();else clearTimeout(tutoTimer)});
+  v.addEventListener('canplay',function(){miss.style.display='none'});
 })();
 function openChpw(){
   ['pw-old','pw-new','pw-cf'].forEach(function(i){document.getElementById(i).value=''});
