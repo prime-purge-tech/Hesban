@@ -240,6 +240,8 @@ body::before{animation:drift 14s ease-in-out infinite alternate}
 .tuto-vid video{width:100%;height:100%;object-fit:contain;background:#000;border-radius:12px;display:block}
 .tuto-miss{display:none;position:absolute;inset:0;align-items:center;justify-content:center;flex-direction:column;gap:8px;font-size:12px;color:var(--dim)}
 .tuto-miss .i{font-size:26px}
+.tuto-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.45);color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;z-index:3}
+.tuto-play.hide{display:none}
 </style>
 </head>
 <body>
@@ -1675,9 +1677,9 @@ document.documentElement.style.overflow='hidden';
 </div></div>
 
 <!-- MODAL TUTO -->
-<div class="modal ctr" id="m-tuto"><div class="mbox">
+<iv class="modal ctr" id="m-tuto"><iv class="mbox">
   <div class="mhdr"><span style="font-weight:800;font-size:14px;display:flex;align-items:center;gap:8px"><svg class="i"><use href="#play"/></svg> TUTORIEL</span><button class="mclose" onclick="closeM('m-tuto')"><svg class="i"><use href="#close"/></svg></button></div>
-  <div class="tuto-vid"><video id="tutoVid" src="hes/tuto.mp4" controls playsinline preload="metadata" onerror="this.style.display='none';document.getElementById('tutoMiss').style.display='flex'"></video><div id="tutoMiss" class="tuto-miss"><svg class="i"><use href="#play"/></svg><span>Ajoute la vidéo : hes/tuto.mp4</span></div></div>
+  <div class="tuto-vid"><video id="tutoVid" playsinline controls preload="auto"><source src="hes/tuto.mp4" type="video/mp4"></video><button id="tutoPlay" class="tuto-play" onclick="playTuto()"><svg class="i"><use href="#play"/></svg></button><div id="tutoMiss" class="tuto-miss"><span id="tutoMsg">Vidéo introuvable</span></div></div>
   <div class="tuto-steps">
     <b>Comment utiliser He'sBan :</b><br>
     1. Cliquez <b>FREE ACCOUNT</b> ou <b>BUY VIP ACCÈS</b><br>
@@ -1812,7 +1814,16 @@ function openFree(){
   showM('m-free');
 }
 function openDefault(){showM('m-def')}
-function openTuto(){showM('m-tuto')}
+function playTuto(){var v=document.getElementById('tutoVid');if(v){var p=v.play();if(p&&p.catch)p.catch(function(){})}}
+function openTuto(){showM('m-tuto');var v=document.getElementById('tutoVid');if(v)v.currentTime=0;playTuto()}
+(function(){
+  var v=document.getElementById('tutoVid'),pb=document.getElementById('tutoPlay');
+  if(!v||!pb)return;
+  v.addEventListener('play',function(){pb.classList.add('hide')});
+  v.addEventListener('pause',function(){pb.classList.remove('hide')});
+  v.addEventListener('ended',function(){pb.classList.remove('hide')});
+  v.addEventListener('error',function(){v.style.display='none';pb.classList.add('hide');document.getElementById('tutoMiss').style.display='flex'});
+})();
 function openChpw(){
   ['pw-old','pw-new','pw-cf'].forEach(function(i){document.getElementById(i).value=''});
   showM('m-chpw');
@@ -1829,7 +1840,7 @@ document.querySelectorAll('.vb').forEach(function(el){
 });
 loadVids(document.getElementById('view-home'));
 function pauseTuto(){var v=document.getElementById('tutoVid');if(v&&!v.paused)v.pause()}
-function closeM(id){document.getElementById(id).classList.remove('on');pauseTuto()}
+function closeM(id){document.getElementById(id).classList.remove('on');var v=document.getElementById('tutoVid');if(v)v.pause()}
 document.querySelectorAll('.modal').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m){m.classList.remove('on');pauseTuto()}})});
 function doCopy(id){
   var t=document.getElementById(id).textContent;
