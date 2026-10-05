@@ -242,6 +242,8 @@ body::before{animation:drift 14s ease-in-out infinite alternate}
 .tuto-miss .i{font-size:26px}
 .tuto-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.45);color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;z-index:3}
 .tuto-play.hide{display:none}
+ #m-tuto .mbox{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(10,16,30,.97)}
+.tuto-play{-webkit-backdrop-filter:none;backdrop-filter:none}
 </style>
 </head>
 <body>
@@ -1814,8 +1816,17 @@ function openFree(){
   showM('m-free');
 }
 function openDefault(){showM('m-def')}
-function playTuto(){var v=document.getElementById('tutoVid');if(v){var p=v.play();if(p&&p.catch)p.catch(function(){})}}
-function openTuto(){showM('m-tuto');var v=document.getElementById('tutoVid');if(v)v.currentTime=0;playTuto()}
+function playTuto(){
+  var v=document.getElementById('tutoVid'),pb=document.getElementById('tutoPlay');if(!v)return;
+  if(v.error){v.load()}
+  v.muted=false;
+  var p=v.play();
+  if(p&&p.catch)p.catch(function(){
+    v.muted=true;var q=v.play();
+    if(q&&q.catch)q.catch(function(){if(pb)pb.classList.remove('hide')});
+  });
+}
+function openTuto(){showM('m-tuto');var v=document.getElementById('tutoVid');if(v){try{v.currentTime=0}catch(e){}}setTimeout(playTuto,50);playTuto()}
 (function(){
   var v=document.getElementById('tutoVid'),pb=document.getElementById('tutoPlay');
   if(!v||!pb)return;
